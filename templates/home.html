@@ -1,0 +1,314 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load shop_filters %}
+
+{% block content %}
+<section id="home-section" class="hero">
+    <div class="home-slider js-fullheight owl-carousel">
+        <div class="slider-item js-fullheight">
+            <div class="overlay"></div>
+            <div class="container-fluid p-0">
+                <div class="row d-md-flex no-gutters slider-text js-fullheight align-items-center justify-content-end" data-scrollax-parent="true">
+                    <div class="one-third order-md-last img js-fullheight" style="background-image: url({% static 'images/bg_1.jpg' %});"></div>
+                    <div class="one-forth d-flex js-fullheight align-items-center ftco-animate" data-scrollax="properties: { translateY: '70%' }">
+                        <div class="text">
+                            <span class="subheading">Winkel eCommerce Shop</span>
+                            <div class="horizontal">
+                                <h3 class="vr" style="background-image: url({% static 'images/divider.jpg' %});">Established Since 2000</h3>
+                                <h1 class="mb-4 mt-3">Catch Your Own <br><span>Stylish & Look</span></h1>
+                                <p>Explore our curated collection of fashion and accessories designed for modern style.</p>
+                                <p><a href="{% url 'products' %}" class="btn btn-primary px-5 py-3 mt-3">Discover Now</a></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="slider-item js-fullheight">
+            <div class="overlay"></div>
+            <div class="container-fluid p-0">
+                <div class="row d-flex no-gutters slider-text js-fullheight align-items-center justify-content-end" data-scrollax-parent="true">
+                    <div class="one-third order-md-last img js-fullheight" style="background-image: url({% static 'images/product-1.jpg' %});"></div>
+                    <div class="one-forth d-flex js-fullheight align-items-center ftco-animate" data-scrollax="properties: { translateY: '70%' }">
+                        <div class="text">
+                            <span class="subheading">Winkel eCommerce Shop</span>
+                            <div class="horizontal">
+                                <h3 class="vr" style="background-image: url({% static 'images/divider.jpg' %});">Best eCommerce Online Shop</h3>
+                                <h1 class="mb-4 mt-3">A Thoroughly <span>Modern</span> Woman</h1>
+                                <p>Discover the latest trends in women's fashion with Winkel.</p>
+                                <p><a href="{% url 'products' %}" class="btn btn-primary px-5 py-3 mt-3">Shop Now</a></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="ftco-section ftco-no-pb ftco-no-pt bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-5 p-md-5 img img-2 d-flex justify-content-center align-items-center" style="background-image: url({% static 'images/about.jpg' %});">
+                <a href="https://vimeo.com/45830194" class="icon popup-vimeo d-flex justify-content-center align-items-center">
+                    <span class="icon-play"></span>
+                </a>
+            </div>
+            <div class="col-md-7 py-5 wrap-about pb-md-5 ftco-animate">
+                <div class="heading-section-bold mb-4 mt-md-5">
+                    <div class="ml-md-0">
+                        <h2 class="mb-4">Better Way to Ship Your Products</h2>
+                    </div>
+                </div>
+                <div class="pb-md-5">
+                    <p>Winkel offers fast, reliable shipping with a focus on customer satisfaction. Explore our premium packaging and return policies.</p>
+                    <div class="row ftco-services">
+                        <div class="col-lg-4 text-center d-flex align-self-stretch ftco-animate">
+                            <div class="media block-6 services">
+                                <div class="icon d-flex justify-content-center align-items-center mb-4">
+                                    <span class="flaticon-002-recommended"></span>
+                                </div>
+                                <div class="media-body">
+                                    <h3 class="heading">Refund Policy</h3>
+                                    <p>Easy returns within 30 days for your peace of mind.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 text-center d-flex align-self-stretch ftco-animate">
+                            <div class="media block-6 services">
+                                <div class="icon d-flex justify-content-center align-items-center mb-4">
+                                    <span class="flaticon-001-box"></span>
+                                </div>
+                                <div class="media-body">
+                                    <h3 class="heading">Premium Packaging</h3>
+                                    <p>Secure and elegant packaging for every order.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 text-center d-flex align-self-stretch ftco-animate">
+                            <div class="media block-6 services">
+                                <div class="icon d-flex justify-content-center align-items-center mb-4">
+                                    <span class="flaticon-003-medal"></span>
+                                </div>
+                                <div class="media-body">
+                                    <h3 class="heading">Superior Quality</h3>
+                                    <p>High-quality products crafted with care.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="ftco-section bg-light">
+    <div class="container">
+        <div class="row justify-content-center mb-3 pb-3">
+            <div class="col-md-12 heading-section text-center ftco-animate">
+                <h2 class="mb-4">Best Sellers</h2>
+                <p>Discover our top-selling fashion items, curated for style and quality.</p>
+            </div>
+        </div>
+        <div class="row">
+            {% for product in products|slice:":4" %}
+            <div class="col-sm col-md-6 col-lg ftco-animate">
+                <div class="product">
+                    <a href="{% url 'product_detail' product.slug %}" class="img-prod">
+                        <img class="img-fluid" src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'images/product-1.jpg' %}{% endif %}" alt="{{ product.name }}">
+                        {% if product.discount_price %}
+                        <span class="status">{{ product.price|calc_discount:product.discount_price }}%</span>
+                        {% endif %}
+                        <div class="overlay"></div>
+                    </a>
+                    <div class="text py-3 px-3">
+                        <h3><a href="{% url 'product_detail' product.slug %}">{{ product.name }}</a></h3>
+                        <div class="d-flex">
+                            <div class="pricing">
+                                <p class="price">
+                                    {% if product.discount_price %}
+                                    <span class="mr-2 price-dc">${{ product.price|floatformat:2 }}</span>
+                                    <span class="price-sale">${{ product.discount_price|floatformat:2 }}</span>
+                                    {% else %}
+                                    <span>${{ product.price|floatformat:2 }}</span>
+                                    {% endif %}
+                                </p>
+                            </div>
+                            <div class="rating">
+                                <p class="text-right">
+                                    {% for i in "12345" %}
+                                    <a href="#"><span class="ion-ios-star{% if product.rating < forloop.counter %}-outline{% endif %}"></span></a>
+                                    {% endfor %}
+                                </p>
+                            </div>
+                        </div>
+                        <p class="bottom-area d-flex px-3">
+                            <a href="#" class="add-to-cart text-center py-2 mr-1"><span>Add to cart <i class="ion-ios-add ml-1"></i></span></a>
+                            <a href="#" class="buy-now text-center py-2">Buy now<span><i class="ion-ios-cart ml-1"></i></span></a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="ftco-section ftco-choose ftco-no-pb ftco-no-pt">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 d-flex align-items-stretch">
+                <div class="img" style="background-image: url({% static 'images/about-1.jpg' %});"></div>
+            </div>
+            <div class="col-md-4 py-md-5 ftco-animate">
+                <div class="text py-3 py-md-5">
+                    <h2 class="mb-4">New Women's Clothing Summer Collection 2019</h2>
+                    <p>Explore our latest women's fashion collection, designed for comfort and style.</p>
+                    <p><a href="{% url 'products' %}" class="btn btn-white px-4 py-3">Shop now</a></p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-5 order-md-last d-flex align-items-stretch">
+                <div class="img img-2" style="background-image: url({% static 'images/about-2.jpg' %});"></div>
+            </div>
+            <div class="col-md-7 py-3 py-md-5 ftco-animate">
+                <div class="text text-2 py-md-5">
+                    <h2 class="mb-4">New Men's Clothing Summer Collection 2019</h2>
+                    <p>Discover our men's fashion collection, blending modern trends with timeless quality.</p>
+                    <p><a href="{% url 'products' %}" class="btn btn-white px-4 py-3">Shop now</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="ftco-section bg-light">
+    <div class="container">
+        <div class="row justify-content-center mb-3 pb-3">
+            <div class="col-md-12 heading-section text-center ftco-animate">
+                <h2 class="mb-4">Products</h2>
+                <p>Explore our full range of fashion and accessories.</p>
+            </div>
+        </div>
+        <div class="row">
+            {% for product in products|slice:"4:8" %}
+            <div class="col-sm col-md-6 col-lg ftco-animate">
+                <div class="product">
+                    <a href="{% url 'product_detail' product.slug %}" class="img-prod">
+                        <img class="img-fluid" src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'images/product-5.jpg' %}{% endif %}" alt="{{ product.name }}">
+                        {% if product.discount_price %}
+                        <span class="status">{{ product.price|calc_discount:product.discount_price }}%</span>
+                        {% endif %}
+                        <div class="overlay"></div>
+                    </a>
+                    <div class="text py-3 px-3">
+                        <h3><a href="{% url 'product_detail' product.slug %}">{{ product.name }}</a></h3>
+                        <div class="d-flex">
+                            <div class="pricing">
+                                <p class="price">
+                                    {% if product.discount_price %}
+                                    <span class="mr-2 price-dc">${{ product.price|floatformat:2 }}</span>
+                                    <span class="price-sale">${{ product.discount_price|floatformat:2 }}</span>
+                                    {% else %}
+                                    <span>${{ product.price|floatformat:2 }}</span>
+                                    {% endif %}
+                                </p>
+                            </div>
+                            <div class="rating">
+                                <p class="text-right">
+                                    {% for i in "12345" %}
+                                    <a href="#"><span class="ion-ios-star{% if product.rating < forloop.counter %}-outline{% endif %}"></span></a>
+                                    {% endfor %}
+                                </p>
+                            </div>
+                        </div>
+                        <p class="bottom-area d-flex px-3">
+                            <a href="#" class="add-to-cart text-center py-2 mr-1"><span>Add to cart <i class="ion-ios-add ml-1"></i></span></a>
+                            <a href="#" class="buy-now text-center py-2">Buy now<span><i class="ion-ios-cart ml-1"></i></span></a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="ftco-section ftco-counter img" id="section-counter" style="background-image: url({% static 'images/bg_4.jpg' %});">
+    <div class="container">
+        <div class="row justify-content-center py-5">
+            <div class="col-md-10">
+                <div class="row">
+                    <div class="col-md-3 d-flex justify-content-center counter-wrap ftco-animate">
+                        <div class="block-18 text-center">
+                            <div class="text">
+                                <strong class="number" data-number="10000">0</strong>
+                                <span>Happy Customers</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 d-flex justify-content-center counter-wrap ftco-animate">
+                        <div class="block-18 text-center">
+                            <div class="text">
+                                <strong class="number" data-number="100">0</strong>
+                                <span>Branches</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 d-flex justify-content-center counter-wrap ftco-animate">
+                        <div class="block-18 text-center">
+                            <div class="text">
+                                <strong class="number" data-number="1000">0</strong>
+                                <span>Partner</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 d-flex justify-content-center counter-wrap ftco-animate">
+                        <div class="block-18 text-center">
+                            <div class="text">
+                                <strong class="number" data-number="100">0</strong>
+                                <span>Awards</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="ftco-section testimony-section">
+    <div class="container">
+        <div class="row justify-content-center mb-5 pb-3">
+            <div class="col-md-7 heading-section ftco-animate">
+                <h2 class="mb-4">Our Satisfied Customers Say</h2>
+                <p>Hear from our happy customers about their shopping experience with Winkel.</p>
+            </div>
+        </div>
+        <div class="row ftco-animate">
+            <div class="col-md-12">
+                <div class="carousel-testimony owl-carousel">
+                    {% for testimonial in testimonials %}
+                    <div class="item">
+                        <div class="testimony-wrap p-4 pb-5">
+                            <div class="user-img mb-5" style="background-image: url('{% if testimonial.image %}{{ testimonial.image.url }}{% else %}{% static 'images/person_1.jpg' %}{% endif %}')">
+                                <span class="quote d-flex align-items-center justify-content-center">
+                                    <i class="icon-quote-left"></i>
+                                </span>
+                            </div>
+                            <div class="text">
+                                <p class="mb-5 pl-4 line">{{ testimonial.content }}</p>
+                                <p class="name">{{ testimonial.name }}</p>
+                                <span class="position">{{ testimonial.position }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load shop_filters %}
+
+{% block content %}
+<div class="hero-wrap hero-bread" style="background-image: url('{% static 'images/bg_6.jpg' %}')">
+    <div class="container">
+        <div class="row no-gutters slider-text align-items-center justify-content-center">
+            <div class="col-md-9 ftco-animate text-center">
+                <p class="breadcrumbs">
+                    <span class="mr-2"><a href="{% url 'home' %}">Home</a></span>
+                    <span>Products</span>
+                </p>
+                <h1 class="mb-0 bread">Collection Products</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="ftco-section bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-9">
+                <div class="row">
+                    {% for product in products %}
+                    <div class="col-sm col-md-6 col-lg-4 ftco-animate">
+                        <div class="product">
+                            <a href="{% url 'product_detail' product.slug %}" class="img-prod">
+                                <img class="img-fluid" src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'images/product-1.jpg' %}{% endif %}" alt="{{ product.name }}">
+                                {% if product.discount_price %}
+                                <span class="status">{{ product.price|calc_discount:product.discount_price }}%</span>
+                                {% endif %}
+                            </a>
+                            <div class="text py-3 px-3">
+                                <h3><a href="{% url 'product_detail' product.slug %}">{{ product.name }}</a></h3>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="pricing">
+                                        <p class="price">
+                                            {% if product.discount_price %}
+                                            <span class="mr-2 price-dc">${{ product.price|floatformat:2 }}</span>
+                                            <span class="price-sale">${{ product.discount_price|floatformat:2 }}</span>
+                                            {% else %}
+                                            <span>${{ product.price|floatformat:2 }}</span>
+                                            {% endif %}
+                                        </p>
+                                    </div>
+                                    <div class="rating">
+                                        <p class="text-right">
+                                            {% for i in "12345" %}
+                                            <a href="#"><span class="icon-star2{% if product.rating < forloop.counter %}-outline{% endif %}"></span></a>
+                                            {% endfor %}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="row mt-5">
+                    <div class="col text-center">
+                        <div class="block-27">
+                            <ul>
+                                {% if page_obj.has_previous %}
+                                <li><a href="?page={{ page_obj.previous_page_number }}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}">&lt;</a></li>
+                                {% endif %}
+                                {% for num in page_obj.paginator.page_range %}
+                                <li {% if page_obj.number == num %}class="active"{% endif %}>
+                                    <a href="?page={{ num }}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}">{{ num }}</a>
+                                </li>
+                                {% endfor %}
+                                {% if page_obj.has_next %}
+                                <li><a href="?page={{ page_obj.next_page_number }}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}">&gt;</a></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3">
+                {% for category in categories %}
+                <div class="sidebar-box">
+                    <h3>{{ category.name }}</h3>
+                    <ul class="categories">
+                        <li><a href="{% url 'products' %}?category={{ category.slug }}">All {{ category.name }}</a></li>
+                        {% for product in category.products.all %}
+                        <li><a href="{% url 'product_detail' product.slug %}">{{ product.name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

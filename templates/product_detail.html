@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load shop_filters %}
+
+{% block content %}
+<div class="hero-wrap hero-bread" style="background-image: url('{% static 'images/bg_6.jpg' %}');">
+    <div class="container">
+        <div class="row no-gutters slider-text align-items-center justify-content-center">
+            <div class="col-md-9 ftco-animate text-center">
+                <p class="breadcrumbs">
+                    <span class="mr-2"><a href="{% url 'home' %}">Home</a></span>
+                    <span class="mr-2"><a href="{% url 'products' %}">Products</a></span>
+                    <span>{{ product.name }}</span>
+                </p>
+                <h1 class="mb-0 bread">{{ product.name }}</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="ftco-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 mb-5 ftco-animate">
+                <a href="{% if product.image %}{{ product.image.url }}{% else %}{% static 'images/product-1.jpg' %}{% endif %}" class="image-popup">
+                    <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'images/product-1.jpg' %}{% endif %}" class="img-fluid" alt="{{ product.name }}">
+                </a>
+            </div>
+            <div class="col-lg-6 product-details pl-md-5 ftco-animate">
+                <h3>{{ product.name }}</h3>
+                <div class="rating d-flex">
+                    <p class="text-left mr-4">
+                        <a href="#" class="mr-2">{{ product.rating|floatformat:1 }}</a>
+                        {% for i in "12345" %}
+                        <a href="#"><span class="ion-ios-star{% if product.rating < forloop.counter %}-outline{% endif %}"></span></a>
+                        {% endfor %}
+                    </p>
+                    <p class="text-left mr-4">
+                        <a href="#" class="mr-2" style="color: #000;">{{ product.ratings_count }} <span style="color: #bbb;">Ratings</span></a>
+                    </p>
+                    <p class="text-left">
+                        <a href="#" class="mr-2" style="color: #000;">{{ product.sold_count }} <span style="color: #bbb;">Sold</span></a>
+                    </p>
+                </div>
+                <p class="price">
+                    {% if product.discount_price %}
+                    <span class="mr-2 price-dc">${{ product.price|floatformat:2 }}</span>
+                    <span class="price-sale">${{ product.discount_price|floatformat:2 }}</span>
+                    {% else %}
+                    <span>${{ product.price|floatformat:2 }}</span>
+                    {% endif %}
+                </p>
+                <p>{{ product.description }}</p>
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <div class="form-group d-flex">
+                            <div class="select-wrap">
+                                <select name="size" id="product-size" class="form-control">
+                                    {% for size in product.sizes|split:"," %}
+                                    <option value="{{ size }}">{{ size }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="w-100"></div>
+                    <div class="input-group col-md-6 d-flex mb-3">
+                        <span class="input-group-btn mr-2">
+                            <button type="button" class="quantity-left-minus btn" data-type="minus" data-field="">
+                                <i class="ion-ios-remove"></i>
+                            </button>
+                        </span>
+                        <input type="text" id="quantity" name="quantity" class="form-control input-number" value="1" min="1" max="{{ product.stock }}">
+                        <span class="input-group-btn ml-2">
+                            <button type="button" class="quantity-right-plus btn" data-type="plus" data-field="">
+                                <i class="ion-ios-add"></i>
+                            </button>
+                        </span>
+                    </div>
+                    <div class="w-100"></div>
+                    <div class="col-md-12">
+                        <p style="color: #000;">{{ product.stock }} pieces available</p>
+                    </div>
+                </div>
+                <p><a href="#" class="btn btn-black py-3 px-5">Add to Cart</a></p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="ftco-section bg-light">
+    <div class="container">
+        <div class="row justify-content-center mb-3 pb-3">
+            <div class="col-md-12 heading-section text-center ftco-animate">
+                <h2 class="mb-4">Related Products</h2>
+                <p>Explore similar items from our collection.</p>
+            </div>
+        </div>
+        <div class="row">
+            {% for related_product in related_products %}
+            <div class="col-sm col-md-6 col-lg-3 ftco-animate">
+                <div class="product">
+                    <a href="{% url 'product_detail' related_product.slug %}" class="img-prod">
+                        <img class="img-fluid" src="{% if related_product.image %}{{ related_product.image.url }}{% else %}{% static 'images/product-1.jpg' %}{% endif %}" alt="{{ related_product.name }}">
+                        {% if related_product.discount_price %}
+                        <span class="status">{{ related_product.price|calc_discount:related_product.discount_price }}%</span>
+                        {% endif %}
+                    </a>
+                    <div class="text py-3 px-3">
+                        <h3><a href="{% url 'product_detail' related_product.slug %}">{{ related_product.name }}</a></h3>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="pricing">
+                                <p class="price">
+                                    {% if related_product.discount_price %}
+                                    <span class="mr-2 price-dc">${{ related_product.price|floatformat:2 }}</span>
+                                    <span class="price-sale">${{ related_product.discount_price|floatformat:2 }}</span>
+                                    {% else %}
+                                    <span>${{ related_product.price|floatformat:2 }}</span>
+                                    {% endif %}
+                                </p>
+                            </div>
+                            <div class="rating">
+                                <p class="text-right">
+                                    {% for i in "12345" %}
+                                    <a href="#"><span class="ion-ios-star{% if related_product.rating < forloop.counter %}-outline{% endif %}"></span></a>
+                                    {% endfor %}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="bottom-area d-flex px-3">
+                            <div class="m-auto">
+                                <a href="#" class="add-to-cart d-flex justify-content-center align-items-center text-center">
+                                    <span>Add to cart</span>
+                                </a>
+                                <a href="#" class="buy-now d-flex justify-content-center align-items-center text-center">
+                                    <span>Buy now</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}
