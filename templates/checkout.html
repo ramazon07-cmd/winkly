@@ -1,0 +1,221 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load shop_filters %}
+
+{% block content %}
+<div class="hero-wrap hero-bread" style="background-image: url('{% static 'images/bg_6.jpg' %}');">
+    <div class="container">
+        <div class="row no-gutters slider-text align-items-center justify-content-center">
+            <div class="col-md-9 ftco-animate text-center">
+                <p class="breadcrumbs">
+                    <span class="mr-2"><a href="{% url 'home' %}">Home</a></span>
+                    <span>Checkout</span>
+                </p>
+                <h1 class="mb-0 bread">Checkout</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="ftco-section bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 ftco-animate">
+                {% if messages %}
+                <div class="messages">
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h3 class="card-title mb-4 billing-heading">Billing Details</h3>
+                        <form action="{% url 'checkout' %}" method="post" class="billing-form">
+                            {% csrf_token %}
+                            <div class="row align-items-end">
+                                <div class="col-md-6 mb-4">
+                                    <label for="{{ form.first_name.id_for_label }}" class="form-label">First Name</label>
+                                    {{ form.first_name }}
+                                    {% if form.first_name.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ form.first_name.errors|join:", " }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-6 mb-4">
+                                    <label for="{{ form.last_name.id_for_label }}" class="form-label">Last Name</label>
+                                    {{ form.last_name }}
+                                    {% if form.last_name.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ form.last_name.errors|join:", " }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                <div class="w-100"></div>
+                                <div class="col-md-12 mb-4">
+                                    <label for="{{ form.state.id_for_label }}" class="form-label">State / Country</label>
+                                    <div class="select-wrap">
+                                        <div class="icon"><span class="ion-ios-arrow-down"></span></div>
+                                        {{ form.state }}
+                                    </div>
+                                    {% if form.state.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ form.state.errors|join:", " }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                <div class="w-100"></div>
+                                <div class="col-md-6 mb-4">
+                                    <label for="{{ form.address.id_for_label }}" class="form-label">Street Address</label>
+                                    {{ form.address }}
+                                    {% if form.address.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ form.address.errors|join:", " }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-6 mb-4">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" placeholder="Apartment, suite, unit etc: (optional)">
+                                    </div>
+                                </div>
+                                <div class="w-100"></div>
+                                <div class="col-md-6 mb-4">
+                                    <label for="{{ form.city.id_for_label }}" class="form-label">Town / City</label>
+                                    {{ form.city }}
+                                    {% if form.city.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ form.city.errors|join:", " }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-6 mb-4">
+                                    <label for="{{ form.postcode.id_for_label }}" class="form-label">Postcode / ZIP</label>
+                                    {{ form.postcode }}
+                                    {% if form.postcode.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ form.postcode.errors|join:", " }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                <div class="w-100"></div>
+                                <div class="col-md-6 mb-4">
+                                    <label for="{{ form.phone.id_for_label }}" class="form-label">Phone</label>
+                                    {{ form.phone }}
+                                    {% if form.phone.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ form.phone.errors|join:", " }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-6 mb-4">
+                                    <label for="{{ form.email.id_for_label }}" class="form-label">Email Address</label>
+                                    {{ form.email }}
+                                    {% if form.email.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ form.email.errors|join:", " }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                <div class="w-100"></div>
+                                <div class="col-md-12 mb-4">
+                                    <div class="form-group mt-4">
+                                        <div class="form-check">
+                                            <input type="checkbox" class="form-check-input" id="create_account">
+                                            <label class="form-check-label" for="create_account">Create an Account?</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input type="checkbox" class="form-check-input" id="ship_different">
+                                            <label class="form-check-label" for="ship_different">Ship to a different address?</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 mb-4">
+                                    <h5 class="billing-heading">Payment Method</h5>
+                                    {{ form.payment_method }}
+                                    {% if form.payment_method.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ form.payment_method.errors|join:", " }}
+                                    </div>
+                                    {% endif %}
+                                    <div class="form-check mt-3">
+                                        {{ form.terms_accepted }}
+                                        <label class="form-check-label" for="{{ form.terms_accepted.id_for_label }}">I have read and accept the <a href="#" target="_blank">terms and conditions</a></label>
+                                        {% if form.terms_accepted.errors %}
+                                        <div class="invalid-feedback">
+                                            {{ form.terms_accepted.errors|join:", " }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary py-3 px-4">Place an Order</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 ftco-animate">
+                <div class="cart-total bg-white p-4 shadow-sm">
+                    <h3 class="billing-heading mb-4">Cart Totals</h3>
+                    <p class="d-flex">
+                        <span>Subtotal</span>
+                        <span>${{ subtotal|floatformat:2 }}</span>
+                    </p>
+                    <p class="d-flex">
+                        <span>Delivery</span>
+                        <span>${{ delivery|floatformat:2 }}</span>
+                    </p>
+                    <p class="d-flex">
+                        <span>Discount</span>
+                        <span>${{ discount|floatformat:2 }}</span>
+                    </p>
+                    <hr>
+                    <p class="d-flex total-price">
+                        <span>Total</span>
+                        <span>${{ total|floatformat:2 }}</span>
+                    </p>
+                </div>
+                <div class="sidebar-box mt-4">
+                    <h3 class="billing-heading">Order Summary</h3>
+                    <ul class="list-unstyled">
+                        {% for item in cart_items %}
+                        <li class="d-flex justify-content-between">
+                            <span>{{ item.product.name }} (x{{ item.quantity }}) {% if item.size %} - {{ item.size }}{% endif %}</span>
+                            <span>${{ item.get_total|floatformat:2 }}</span>
+                        </li>
+                        {% empty %}
+                        <li>No items in cart.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="ftco-section-parallax">
+    <div class="parallax-img d-flex align-items-center">
+        <div class="container">
+            <div class="row d-flex justify-content-center py-5">
+                <div class="col-md-7 text-center heading-section ftco-animate">
+                    <h2>Subscribe to our Newsletter</h2>
+                    <div class="row d-flex justify-content-center mt-5">
+                        <div class="col-md-8">
+                            <form action="{% url 'newsletter_subscribe' %}" method="post" class="subscribe-form">
+                                {% csrf_token %}
+                                <div class="form-group d-flex">
+                                    <input type="email" name="email" class="form-control rounded-left" placeholder="Enter email address">
+                                    <input type="submit" value="Subscribe" class="submit btn btn-primary rounded-right px-3">
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

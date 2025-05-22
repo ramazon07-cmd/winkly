@@ -1,0 +1,182 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load shop_filters %}
+
+{% block content %}
+<div class="hero-wrap hero-bread" style="background-image: url('{% static 'images/bg_6.jpg' %}');">
+    <div class="container">
+        <div class="row no-gutters slider-text align-items-center justify-content-center">
+            <div class="col-md-9 ftco-animate text-center">
+                <p class="breadcrumbs">
+                    <span class="mr-2"><a href="{% url 'home' %}">Home</a></span>
+                    <span>Cart</span>
+                </p>
+                <h1 class="mb-0 bread">My Cart</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="ftco-section ftco-cart bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 ftco-animate">
+                {% if messages %}
+                <div class="messages">
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                <div class="cart-list">
+                    <table class="table">
+                        <thead class="thead-primary">
+                            <tr class="text-center">
+                                <th>&nbsp;</th>
+                                <th>&nbsp;</th>
+                                <th>Product</th>
+                                <th>Price</th>
+                                <th>Size</th>
+                                <th>Quantity</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in cart_items %}
+                            <tr class="text-center">
+                                <td class="product-remove">
+                                    <form action="{% url 'cart' %}" method="post">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="item_id" value="{{ item.id }}">
+                                        <input type="hidden" name="action" value="remove">
+                                        <button type="submit" class="btn btn-link p-0"><span class="ion-ios-close"></span></button>
+                                    </form>
+                                </td>
+                                <td class="image-prod">
+                                    <div class="img" style="background-image: url('{% if item.product.image %}{{ item.product.image.url }}{% else %}{% static 'images/product-1.jpg' %}{% endif %}');"></div>
+                                </td>
+                                <td class="product-name">
+                                    <h3><a href="{% url 'product_detail' item.product.slug %}">{{ item.product.name }}</a></h3>
+                                    <p>{{ item.product.description|truncatewords:10 }}</p>
+                                </td>
+                                <td class="price">${{ item.product.discount_price|floatformat:2|default:item.product.price|floatformat:2 }}</td>
+                                <td class="size">
+                                    <form action="{% url 'cart' %}" method="post">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="item_id" value="{{ item.id }}">
+                                        <input type="hidden" name="action" value="update">
+                                        <select name="size" class="form-control" onchange="this.form.submit()">
+                                            {% for size in item.product.sizes|split:"," %}
+                                            <option value="{{ size }}" {% if size == item.size %}selected{% endif %}>{{ size }}</option>
+                                            {% empty %}
+                                            <option value="">N/A</option>
+                                            {% endfor %}
+                                        </select>
+                                    </form>
+                                </td>
+                                <td class="quantity">
+                                    <form action="{% url 'cart' %}" method="post">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="item_id" value="{{ item.id }}">
+                                        <input type="hidden" name="action" value="update">
+                                        <div class="input-group mb-3">
+                                            <span class="input-group-btn">
+                                                <button type="button" class="quantity-left-minus btn" data-type="minus"><i class="ion-ios-remove"></i></button>
+                                            </span>
+                                            {{ forms.item.id.quantity }}
+                                            <span class="input-group-btn">
+                                                <button type="button" class="quantity-right-plus btn" data-type="plus"><i class="ion-ios-add"></i></button>
+                                            </span>
+                                        </div>
+                                    </form>
+                                </td>
+                                <td class="total">${{ item.get_total|floatformat:2 }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="7" class="text-center">Your cart is empty.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col col-lg-5 col-md-6 mt-5 cart-wrap ftco-animate">
+                <div class="cart-total mb-3 bg-white p-4 shadow-sm">
+                    <h3>Cart Totals</h3>
+                    <p class="d-flex">
+                        <span>Subtotal</span>
+                        <span>${{ subtotal|floatformat:2 }}</span>
+                    </p>
+                    <p class="d-flex">
+                        <span>Delivery</span>
+                        <span>${{ delivery|floatformat:2 }}</span>
+                    </p>
+                    <p class="d-flex">
+                        <span>Discount</span>
+                        <span>${{ discount|floatformat:2 }}</span>
+                    </p>
+                    <hr>
+                    <p class="d-flex total-price">
+                        <span>Total</span>
+                        <span>${{ total|floatformat:2 }}</span>
+                    </p>
+                </div>
+                <p class="text-center">
+                    <a href="{% url 'checkout' %}" class="btn btn-primary py-3 px-4">Proceed to Checkout</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="ftco-section-parallax">
+    <div class="parallax-img d-flex align-items-center">
+        <div class="container">
+            <div class="row d-flex justify-content-center py-5">
+                <div class="col-md-7 text-center heading-section ftco-animate">
+                    <h2>Subscribe to our Newsletter</h2>
+                    <div class="row d-flex justify-content-center mt-5">
+                        <div class="col-md-8">
+                            <form action="{% url 'newsletter_subscribe' %}" method="post" class="subscribe-form">
+                                {% csrf_token %}
+                                <div class="form-group d-flex">
+                                    <input type="email" name="email" class="form-control rounded-left" placeholder="Enter email address">
+                                    <input type="submit" value="Subscribe" class="submit btn btn-primary rounded-right px-3">
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+$(document).ready(function() {
+    $('.quantity-left-minus').click(function(e) {
+        e.preventDefault();
+        var input = $(this).closest('.input-group').find('input.input-number');
+        var value = parseInt(input.val());
+        if (value > 1) {
+            input.val(value - 1).change();
+        }
+    });
+    $('.quantity-right-plus').click(function(e) {
+        e.preventDefault();
+        var input = $(this).closest('.input-group').find('input.input-number');
+        var value = parseInt(input.val());
+        var max = parseInt(input.attr('max'));
+        if (value < max) {
+            input.val(value + 1).change();
+        }
+    });
+    $('input.input-number').change(function() {
+        $(this).closest('form').submit();
+    });
+});
+</script>
+{% endblock %}
